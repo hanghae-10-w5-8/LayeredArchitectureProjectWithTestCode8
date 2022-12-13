@@ -20,6 +20,11 @@ class PostRepository extends Posts {
         const posts = await Posts.findAll();
         return posts;
     };
+
+    findPostById = async (postId) => {
+        const post = await Posts.findByPk(postId);
+        return post;
+    };
 }
 
 module.exports = PostRepository;

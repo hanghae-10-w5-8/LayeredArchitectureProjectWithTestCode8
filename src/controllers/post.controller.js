@@ -2,8 +2,9 @@ const PostService = require('../services/post.service.js');
 const { InvalidParamsError } = require('../exceptions/index.exception.js');
 
 class PostController {
+    #postService;
     constructor() {
-        this.postService = new PostService();
+        this.#postService = new PostService();
     }
     createPost = async (req, res, next) => {
         try {
@@ -14,7 +15,7 @@ class PostController {
                 throw new InvalidParamsError();
             }
 
-            const posts = await this.postService.createPost({
+            const posts = await this.#postService.createPost({
                 userId,
                 title,
                 content,
@@ -26,8 +27,19 @@ class PostController {
     };
 
     getPosts = async (req, res, next) => {
-        const post = await this.postService.findAllPost();
+        const post = await this.#postService.findAllPost();
         res.json({ result: post });
+    };
+    getPostById = async (req, res, next) => {
+        try {
+            const { postId } = req.params;
+            if (!postId) throw new InvalidParamsError();
+            const post = await this.#postService.findPostById(postId);
+
+            res.json({ data: post });
+        } catch (error) {
+            next(error);
+        }
     };
 }
 
