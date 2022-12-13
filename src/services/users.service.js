@@ -12,10 +12,7 @@ const {
 const env = process.env;
 
 class UsersService {
-    #usersRepository;
-    constructor() {
-        this.#usersRepository = new UsersRepository(Users);
-    }
+    #usersRepository = new UsersRepository(Users);
 
     findUser = async ({ nickname }) => {
         const user = await this.#usersRepository.findUser({
@@ -76,17 +73,16 @@ class UsersService {
             );
         }
 
-        const accessToken = createToken(user.userId, '1h');
+        const accessToken = createToken(user.userId, '3h');
         const refreshToken = createToken('refreshToken', '1d');
         tokenObject[refreshToken] = user.userId;
 
         const tokens = {
             accessToken,
             accessTokenName: env.ACCESSTOKEN_NAME,
-            accessCookieExpiration: setCookieExpiration(5),
             refreshToken,
             refreshTokenName: env.REFRESHTOKEN_NAME,
-            refreshCookieExpiration: setCookieExpiration(48),
+            cookieExpiration: setCookieExpiration(24),
         };
         return tokens;
     };
