@@ -5,7 +5,7 @@ const env = process.env;
 let tokenObject = {};
 
 function createToken(id, duration) {
-    return jwt.sign({ userId: id }, env.COOKIE_SECRETE_KEY, {
+    return jwt.sign({ userId: id }, env.TOKEN_SECRETE_KEY, {
         expiresIn: duration,
     });
 }

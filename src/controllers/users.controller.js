@@ -39,13 +39,13 @@ class UsersController {
             });
 
             res.cookie(tokens.accessTokenName, `Bearer ${tokens.accessToken}`, {
-                expires: tokens.accessCookieExpiration,
+                expires: tokens.cookieExpiration,
             });
             res.cookie(
                 tokens.refreshTokenName,
                 `Bearer ${tokens.refreshToken}`,
                 {
-                    expires: tokens.refreshCookieExpiration,
+                    expires: tokens.cookieExpiration,
                 }
             );
             res.status(200).json({

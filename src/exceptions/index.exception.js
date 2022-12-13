@@ -15,4 +15,12 @@ class ValidationError extends Error {
     }
 }
 
-module.exports = { InvalidParamsError, ValidationError };
+class AuthenticationError extends Error {
+    constructor(message, status) {
+        super(message);
+        this.status = status || 400;
+        this.name = 'AuthenticationError';
+    }
+}
+
+module.exports = { InvalidParamsError, ValidationError, AuthenticationError };
