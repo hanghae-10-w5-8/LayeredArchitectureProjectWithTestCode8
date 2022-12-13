@@ -1,4 +1,5 @@
 const PostRepository = require('../repositories/post.repository.js');
+const { ValidationError } = require('../exceptions/index.exception.js');
 
 class PostService {
     #postRepository;
@@ -37,6 +38,19 @@ class PostService {
         const findPost = await this.#postRepository.findPostById(postId);
 
         return findPost;
+    };
+
+    updatePost = async (postId, title, content) => {
+        const result = await this.#postRepository.findPostById(postId);
+        if (!result) throw new ValidationError('존재하지 않는 게시글입니다.');
+
+        const updatePost = await this.#postRepository.updatePost(
+            postId,
+            title,
+            content
+        );
+        if (!updatePost)
+            throw new ValidationError('게시글 수정에 실패하였습니다.');
     };
 }
 

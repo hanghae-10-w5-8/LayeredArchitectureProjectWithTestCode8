@@ -41,6 +41,21 @@ class PostController {
             next(error);
         }
     };
+
+    updatePost = async (req, res, next) => {
+        try {
+            const { postId } = req.params;
+            const { title, content } = req.body;
+            if (!title || !content) {
+                throw new InvalidParamsError();
+            }
+
+            await this.#postService.updatePost(postId, title, content);
+            res.json({ result: '게시글 수정 완료' });
+        } catch (error) {
+            next(error);
+        }
+    };
 }
 
 module.exports = PostController;
