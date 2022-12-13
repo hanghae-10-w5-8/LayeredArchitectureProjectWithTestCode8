@@ -1,5 +1,6 @@
 const { Comments, Users, Posts } = require('../models');
 const InternalServerError = require('../exceptions/index.exception.js');
+const { Op } = require('sequelize');
 
 class CommentRepository extends Comments {
     constructor() {
@@ -7,9 +8,24 @@ class CommentRepository extends Comments {
     }
     getComment = async ({ postId }) => {
         const comments = await Comments.findAll({
+            raw: true,
             where: { postId: postId },
+            include: [
+                {
+                    model: Users,
+                    attributes: ['nickname'],
+                },
+            ],
         });
         return comments;
+    };
+
+    findComment = async ({ commentId, userId }) => {
+        return Comments.findOne({
+            where: {
+                [Op.and]: [{ commentId }, { userId }],
+            },
+        });
     };
 
     createComment = async ({ postId, userId, comment }) => {
@@ -21,6 +37,27 @@ class CommentRepository extends Comments {
         });
 
         return comments;
+    };
+
+    editComment = async ({ commentId, comment }) => {
+        const result = await Comments.update(
+            { content: comment },
+            {
+                where: { commentId: commentId },
+            }
+        );
+
+        return result;
+    };
+
+    deleteComment = async ({ commentId, userId }) => {
+        const result = await Comments.destroy({
+            where: {
+                [Op.and]: [{ commentId }, { userId }],
+            },
+        });
+
+        return result;
     };
 }
 
