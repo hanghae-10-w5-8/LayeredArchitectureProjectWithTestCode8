@@ -1,17 +1,17 @@
-const { Comments, Users } = require('../models');
 const { Op } = require('sequelize');
 
-class CommentRepository extends Comments {
-    constructor() {
-        super();
+class CommentRepository {
+    constructor(Comments, Users) {
+        this.Comments = Comments
+        this.Users = Users
     }
     getComment = async ({ postId }) => {
-        const comments = await Comments.findAll({
+        const comments = await this.Comments.findAll({
             raw: true,
             where: { postId: postId },
             include: [
                 {
-                    model: Users,
+                    model: this.Users,
                     attributes: ['nickname'],
                 },
             ],
@@ -20,7 +20,7 @@ class CommentRepository extends Comments {
     };
 
     findComment = async ({ commentId, userId }) => {
-        return Comments.findOne({
+        return this.Comments.findOne({
             where: {
                 [Op.and]: [{ commentId }, { userId }],
             },
@@ -28,7 +28,7 @@ class CommentRepository extends Comments {
     };
 
     createdComment = async ({ postId, userId, comment }) => {
-        const comments = await Comments.create({
+        const comments = await this.Comments.create({
             postId: postId,
             userId: userId,
             content: comment,
@@ -38,7 +38,7 @@ class CommentRepository extends Comments {
     };
 
     editComment = async ({ commentId, comment }) => {
-        const result = await Comments.update(
+        const result = await this.Comments.update(
             { content: comment },
             {
                 where: { commentId: commentId },
@@ -49,7 +49,7 @@ class CommentRepository extends Comments {
     };
 
     deleteComment = async ({ commentId, userId }) => {
-        const result = await Comments.destroy({
+        const result = await this.Comments.destroy({
             where: {
                 [Op.and]: [{ commentId }, { userId }],
             },

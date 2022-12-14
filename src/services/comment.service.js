@@ -1,10 +1,11 @@
 const CommentRepository = require('../repositories/comment.repository.js');
 const { ValidationError } = require('../exceptions/index.exception.js');
+const { Comments, Users } = require('../models');
 
 class CommentService {
     #commentRepository;
     constructor() {
-        this.#commentRepository = new CommentRepository();
+        this.#commentRepository = new CommentRepository(Comments, Users);
     }
 
     createdComment = async ({ postId, userId, comment }) => {
