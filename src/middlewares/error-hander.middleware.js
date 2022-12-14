@@ -3,14 +3,10 @@ const errorLogger = (error, request, response, next) => {
 };
 
 const errorHandler = (error, req, res, next) => {
-    let status = error.status || 400;
-    let message = error.message;
-    if (error.name === 'SequelizeValidationError') {
-        status = 500;
-        message = 'Internal Server Error';
+    if (error.name.includes("Sequelize")) {
+        res.status(500).json({errorMessage: 'Internal Server Error'})
     }
-    res.status(status);
-    res.json({ errorMessage: message });
+    res.status(error.status || 400).json({ errorMessage: error.message });
 };
 
 module.exports = { errorLogger, errorHandler };
