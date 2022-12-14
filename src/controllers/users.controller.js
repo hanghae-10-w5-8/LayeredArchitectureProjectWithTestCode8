@@ -13,11 +13,7 @@ class UsersController {
                 throw new InvalidParamsError();
             }
 
-            await this.#usersService.createUser({
-                nickname,
-                password,
-                confirm,
-            });
+            await this.#usersService.createUser(nickname, password, confirm);
 
             res.status(201).json({ message: '회원 가입에 성공하였습니다.' });
         } catch (err) {
@@ -33,10 +29,10 @@ class UsersController {
                 throw new InvalidParamsError();
             }
 
-            const tokens = await this.#usersService.logInUser({
+            const tokens = await this.#usersService.logInUser(
                 nickname,
-                password,
-            });
+                password
+            );
 
             res.cookie(tokens.accessTokenName, `Bearer ${tokens.accessToken}`, {
                 expires: tokens.cookieExpiration,

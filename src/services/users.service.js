@@ -1,5 +1,4 @@
 require('dotenv').config();
-const jwt = require('jsonwebtoken');
 const UsersRepository = require('../repositories/users.repository.js');
 const { Users } = require('../models');
 const { ValidationError } = require('../exceptions/index.exception.js');
@@ -14,24 +13,23 @@ const env = process.env;
 class UsersService {
     #usersRepository = new UsersRepository(Users);
 
-    findUser = async ({ nickname }) => {
-        const user = await this.#usersRepository.findUser({
-            nickname,
-        });
+    findUser = async (nickname) => {
+        const user = await this.#usersRepository.findUser(nickname);
 
         return user;
     };
 
-    createUser = async ({ nickname, password, confirm }) => {
+    createUser = async (nickname, password, confirm) => {
         const re_nickname = /^[a-zA-Z0-9]{3,10}$/;
         const re_password = /^[a-zA-Z0-9]{4,30}$/;
         function isRegexValidation(target, regex) {
             return target.search(regex) !== -1;
         }
+        console.log('service:', nickname);
 
-        const isExistUser = await this.findUser({ nickname });
+        const isExistUser = await this.findUser(nickname);
 
-        if (isExistUser.nickname === nickname) {
+        if (isExistUser !== null && isExistUser.nickname === nickname) {
             throw new ValidationError('중복된 닉네임입니다.', 412);
         } else if (password !== confirm) {
             throw new ValidationError('패스워드가 일치하지 않습니다.', 412);
@@ -51,20 +49,17 @@ class UsersService {
 
         const hashValue = hash(password);
 
-        const user = await this.#usersRepository.createUser({
+        const user = await this.#usersRepository.createUser(
             nickname,
-            password: hashValue,
-        });
+            hashValue
+        );
 
         return user;
     };
 
-    logInUser = async ({ nickname, password }) => {
+    logInUser = async (nickname, password) => {
         const hashValue = hash(password);
-        const user = await this.#usersRepository.authUser({
-            nickname,
-            password: hashValue,
-        });
+        const user = await this.#usersRepository.authUser(nickname, hashValue);
 
         if (user === null || !user) {
             throw new ValidationError(

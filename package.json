@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "npx jest --forceExit",
+    "test:silent": "npx jest --silent --forceExit",
+    "test:coverage": "npx jest --coverage --forceExit",
+    "test:unit": "npx jest src/__test__/unit --forceExit --passWithNoTests",
+    "test:integration": "npx jest src/__test__/integration --forceExit --passWithNoTests",
     "lint": "eslint src",
     "dev": "nodemon src/app.js",
     "db:create": "npx sequelize db:create --config ./src/config/config.js",

@@ -5,14 +5,14 @@ class UsersRepository {
         this.usersModel = UsersModel;
     }
 
-    findUser = async ({ nickname }) => {
+    findUser = async (nickname) => {
         return await this.usersModel.findOne({
             where: { nickname },
             attributes: { exclude: ['password'] },
         });
     };
 
-    authUser = async ({ nickname, password }) => {
+    authUser = async (nickname, password) => {
         return await this.usersModel.findOne({
             where: {
                 [Op.and]: [{ nickname }, { password }],
@@ -21,7 +21,7 @@ class UsersRepository {
         });
     };
 
-    createUser = async ({ nickname, password }) => {
+    createUser = async (nickname, password) => {
         return await this.usersModel.create({
             nickname,
             password,
