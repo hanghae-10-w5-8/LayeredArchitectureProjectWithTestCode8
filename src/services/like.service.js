@@ -10,7 +10,7 @@ class LikeService {
         const data = await this.#likeRepository.getAllLikedPosts( userId  );
 
         if (!data)
-            throw new ValidationError(
+            throw new InvalidParamsError(
                 '좋아요 게시글 조회에 실패하였습니다.',
                 400
             );
