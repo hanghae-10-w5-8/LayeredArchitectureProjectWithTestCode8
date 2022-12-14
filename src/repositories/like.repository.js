@@ -22,13 +22,13 @@ class LikeRepository extends likes {
     };
 
     createPostLike = async ({ postId, userId }) => {
-        const x = await likes.findOne({
+        const existLike = await likes.findOne({
             where: {
                 [Op.and]: [{ postId }, { userId }],
             },
         });
-        console.log(x);
-        return x;
+        
+        return existLike;
     };
 
     createLike = async ({ postId, userId }) => {
