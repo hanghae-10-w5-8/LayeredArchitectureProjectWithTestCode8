@@ -4,9 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "npx jest --forceExit",
+    "test:silent": "npx jest --silent --forceExit",
+    "test:coverage": "npx jest --coverage --forceExit",
+    "test:unit": "npx jest src/__test__/unit --forceExit --passWithNoTests",
+    "test:integration": "npx jest src/__test__/integration --forceExit --passWithNoTests",
     "lint": "eslint src",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "db:create": "npx sequelize db:create --config ./src/config/config.js",
+    "db:migrate": "npx sequelize db:migrate --config ./src/config/config.js --migrations-path ./src/migrations --models-path ./src/models",
+    "db:drop": "npx sequelize db:drop --config ./src/config/config.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +23,7 @@
     "dotenv": "^16.0.3",
     "eslint-config-airbnb": "^19.0.4",
     "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
     "sequelize": "^6.27.0"
