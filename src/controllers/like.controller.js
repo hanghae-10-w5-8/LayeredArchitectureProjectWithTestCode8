@@ -26,16 +26,16 @@ class LikeController {
     };
 
     createPostLike = async (req, res, next) => {
-        // try {
+        try {
             const { userId } = req.body;
             const { postId } = req.params;
 
             if(!userId) throw new InvalidParamsError();
 
             // PostService 확인하고 게시물 없을시 return문 추가
-            // const existPost = this.#postService.findPostById({ postId });
+            const existPost = this.#postService.findPostById( postId );
             
-            // if(!existPost) throw new InvalidParamsError('존재하지 않는 게시물입니다.', 404);
+            if(!existPost) throw new InvalidParamsError('존재하지 않는 게시물입니다.', 404);
 
             const isLike = await this.#likeService.createPostLike(
                 postId,
@@ -51,9 +51,9 @@ class LikeController {
             res.status(201).json({
                 message: '게시글의 좋아요를 등록하였습니다.',
             });
-        // } catch (error) {
-        //     next(error)
-        // }
+        } catch (error) {
+            next(error)
+        }
     };
 }
 
