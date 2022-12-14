@@ -15,12 +15,5 @@ class ValidationError extends Error {
     }
 }
 
-class InternalServerError extends Error {
-    constructor(message, status) {
-        super(message);
-        this.status = 500;
-        this.message = 'Internal Server Error';
-    }
-}
 
-module.exports = { InvalidParamsError, ValidationError, InternalServerError };
+module.exports = { InvalidParamsError, ValidationError };
