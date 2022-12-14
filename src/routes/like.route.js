@@ -4,7 +4,8 @@ const router = express.Router();
 const LikeController = require('../controllers/like.controller');
 const likeController = new LikeController();
 
-router.get('/', likeController.getAllPostLike);
-router.put('/:postId', likeController.createPostLike);
+// 합쳐지면 index.js/router.use('/posts', [likeRouter, postRouter]); 로 수정
+router.get('/like', likeController.getAllLikedPosts);
+router.put('/:postId/like', likeController.createPostLike);
 
 module.exports = router;

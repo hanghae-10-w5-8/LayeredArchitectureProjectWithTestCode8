@@ -5,7 +5,7 @@ class LikeRepository extends likes {
         super();
     }
 
-    getAllPostsLike = async ({ userId }) => {
+    getAllLikedPosts = async ( userId ) => {
         return await likes.findAll({
             where: { userId },
             include: [
@@ -21,7 +21,7 @@ class LikeRepository extends likes {
         });
     };
 
-    createPostLike = async ({ postId, userId }) => {
+    createPostLike = async ( postId, userId ) => {
         return likes.findOne({
             where: {
                 [Op.and]: [{ postId }, { userId }],
@@ -29,14 +29,14 @@ class LikeRepository extends likes {
         });
     };
 
-    createLike = async ({ postId, userId }) => {
+    createLike = async ( postId, userId ) => {
         return likes.create({
             postId,
             userId
         });
     };
 
-    deleteLike = async ({ postId, userId }) => {
+    deleteLike = async ( postId, userId ) => {
         return likes.destroy({
             where: {
                 [Op.and]: [{ postId }, { userId }],

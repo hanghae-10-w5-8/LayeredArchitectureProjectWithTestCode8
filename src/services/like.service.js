@@ -6,8 +6,8 @@ class LikeService {
         this.#likeRepository = new LikeRepository();
     }
 
-    getAllPostLike = async ({ userId }) => {
-        const data = await this.#likeRepository.getAllPostsLike({ userId });
+    getAllLikedPosts = async ( userId ) => {
+        const data = await this.#likeRepository.getAllLikedPosts( userId  );
 
         if (!data)
             throw new ValidationError(
@@ -30,16 +30,16 @@ class LikeService {
             .sort((a, b) => b.likes - a.likes);
     };
 
-    createPostLike = async ({ postId, userId }) => {
-        const existLike = await this.#likeRepository.createPostLike({
+    createPostLike = async ( postId, userId ) => {
+        const existLike = await this.#likeRepository.createPostLike(
             postId,
             userId,
-        });
+        );
 
         if(!existLike) {
-            await this.#likeRepository.createLike({ postId, userId });
+            await this.#likeRepository.createLike( postId, userId );
         } else {
-            await this.#likeRepository.deleteLike({ postId, userId });
+            await this.#likeRepository.deleteLike( postId, userId );
         }
 
         return existLike;
