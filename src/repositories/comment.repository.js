@@ -1,5 +1,4 @@
-const { Comments, Users, Posts } = require('../models');
-const InternalServerError = require('../exceptions/index.exception.js');
+const { Comments, Users } = require('../models');
 const { Op } = require('sequelize');
 
 class CommentRepository extends Comments {

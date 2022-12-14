@@ -13,6 +13,7 @@ class CommentService {
             userId,
             comment,
         });
+        if(!commentData) throw ValidationError("댓글 작성에 실패하였습니다.",400)
         return commentData;
     };
 
@@ -22,7 +23,7 @@ class CommentService {
             userId,
         });
 
-        if (!result) throw new ValidationError('존재하지 않는 댓글입니다.');
+        if (!result) throw new ValidationError('댓글이 존재하지 않습니다.',404);
 
         const editComment = await this.#commentRepository.editComment({
             commentId,
@@ -30,7 +31,7 @@ class CommentService {
             comment,
         });
         if (!editComment) {
-            throw new ValidationError('댓글 수정에 실패하였습니다.');
+            throw new ValidationError('댓글 수정이 정상적으로 처리되지 않았습니다.',400);
         }
     };
 
@@ -39,20 +40,21 @@ class CommentService {
             commentId,
             userId,
         });
-        if (!result) throw new ValidationError('존재하지 않는 댓글입니다.');
+        if (!result) throw new ValidationError('댓글이 존재하지 않습니다.',404);
 
         const deleteResult = await this.#commentRepository.deleteComment({
             commentId,
             userId,
         });
 
-        if (!deleteResult) throw ValidationError('댓글 삭제에 실패하였습니다.');
+        if (!deleteResult) throw ValidationError('댓글 삭제가 정상적으로 처리되지 않았습니다.',400);
     };
 
     getComments = async ({ postId }) => {
         const commentsResult = await this.#commentRepository.getComment({
             postId,
         });
+        if(!commentsResult) throw ValidationError("댓글 조회에 실패하였습니다.",400);
         commentsResult.map((data) => {
             data['nickName'] = data['User.nickname'];
             delete data['User.nickname'];

@@ -1,5 +1,5 @@
 const CommentService = require('../services/comment.service.js');
-const { InvalidParamsError } = require('../exceptions/index.exception');
+const { ValidationError } = require('../exceptions/index.exception');
 
 class CommentController {
     #commentService;
@@ -12,7 +12,7 @@ class CommentController {
             const { userId, comment } = req.body;
 
             if (!postId || !userId || !comment) {
-                throw new InvalidParamsError();
+                throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
             }
 
             const dbData = await this.#commentService.createdComment({
@@ -33,7 +33,7 @@ class CommentController {
             const { comment, userId } = req.body;
 
             if (!commentId || !userId || !comment) {
-                throw new InvalidParamsError();
+                throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
             }
 
             await this.#commentService.editComment({
@@ -52,7 +52,7 @@ class CommentController {
         try {
             const { commentId } = req.params;
             const { userId } = req.body;
-            if (!userId) throw new InvalidParamsError();
+            if (!userId) throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
 
             await this.#commentService.deleteComment({
                 commentId,
@@ -69,7 +69,7 @@ class CommentController {
         try {
             const { postId } = req.params;
 
-            if (!postId) throw new InvalidParamsError();
+            if (!postId) throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
 
             const result = await this.#commentService.getComments({
                 postId,
