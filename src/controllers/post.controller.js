@@ -8,35 +8,41 @@ class PostController {
     }
     createPost = async (req, res, next) => {
         try {
-            console.log(req.body);
             const { userId, title, content } = req.body;
 
             if (!title || !content) {
-                throw new InvalidParamsError();
+                throw new InvalidParamsError(
+                    '요청한 데이터 형식이 올바르지 않습니다.'
+                );
             }
 
-            const posts = await this.#postService.createPost({
+            const posts = await this.#postService.createPost(
                 userId,
                 title,
-                content,
-            });
-            res.json({ result: posts });
+                content
+            );
+            res.status(201).json({ result: posts });
         } catch (error) {
             next(error);
         }
     };
 
     getPosts = async (req, res, next) => {
-        const post = await this.#postService.findAllPost();
-        res.json({ result: post });
+        try {
+            const post = await this.#postService.findAllPost();
+            res.status(200).json({ result: post });
+        } catch (error) {
+            next(error);
+        }
     };
     getPostById = async (req, res, next) => {
         try {
             const { postId } = req.params;
+            if (postId === 'like') return next();
             if (!postId) throw new InvalidParamsError();
             const post = await this.#postService.findPostById(postId);
 
-            res.json({ data: post });
+            res.status(200).json({ data: post });
         } catch (error) {
             next(error);
         }
@@ -51,7 +57,7 @@ class PostController {
             }
 
             await this.#postService.updatePost(postId, title, content);
-            res.json({ result: '게시글 수정 완료' });
+            res.status(200).json({ result: '게시글을 수정 하였습니다.' });
         } catch (error) {
             next(error);
         }
