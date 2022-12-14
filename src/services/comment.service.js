@@ -7,8 +7,8 @@ class CommentService {
         this.#commentRepository = new CommentRepository();
     }
 
-    createComment = async ({ postId, userId, comment }) => {
-        const commentData = await this.#commentRepository.createComment({
+    createdComment = async ({ postId, userId, comment }) => {
+        const commentData = await this.#commentRepository.createdComment({
             postId,
             userId,
             comment,

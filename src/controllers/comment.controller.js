@@ -15,7 +15,7 @@ class CommentController {
                 throw new InvalidParamsError();
             }
 
-            const dbData = await this.#commentService.createComment({
+            const dbData = await this.#commentService.createdComment({
                 postId,
                 userId,
                 comment,

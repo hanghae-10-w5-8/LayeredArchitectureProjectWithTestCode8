@@ -28,7 +28,7 @@ class CommentRepository extends Comments {
         });
     };
 
-    createComment = async ({ postId, userId, comment }) => {
+    createdComment = async ({ postId, userId, comment }) => {
         const comments = await Comments.create({
             postId: postId,
             userId: userId,
