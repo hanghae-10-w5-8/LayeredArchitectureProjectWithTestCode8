@@ -1,12 +1,12 @@
 const { Op } = require("sequelize");
 const { likes, Users, Posts } = require('../models');
-class LikeRepository extends likes {
-    constructor() {
-        super();
+class LikeRepository {
+    constructor(LikeModel) {
+        this.likeModel = LikeModel;
     }
 
     getAllLikedPosts = async ( userId ) => {
-        return await likes.findAll({
+        return await this.likeModel.findAll({
             where: { userId },
             include: [
                 {
@@ -22,7 +22,7 @@ class LikeRepository extends likes {
     };
 
     createPostLike = async ( postId, userId ) => {
-        return likes.findOne({
+        return this.likeModel.findOne({
             where: {
                 [Op.and]: [{ postId }, { userId }],
             },
@@ -30,14 +30,14 @@ class LikeRepository extends likes {
     };
 
     createLike = async ( postId, userId ) => {
-        return likes.create({
+        return this.likeModel.create({
             postId,
             userId
         });
     };
 
     deleteLike = async ( postId, userId ) => {
-        return likes.destroy({
+        return this.likeModel.destroy({
             where: {
                 [Op.and]: [{ postId }, { userId }],
             },

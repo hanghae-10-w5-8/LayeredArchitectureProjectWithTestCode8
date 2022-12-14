@@ -1,13 +1,12 @@
 const LikeRepository = require('../repositories/like.repository');
 const { InvalidParamsError } = require('../exceptions/index.exception.js');
+const { likes } = require('../models/index.js');
 class LikeService {
-    #likeRepository;
-    constructor() {
-        this.#likeRepository = new LikeRepository();
-    }
+    likeRepository = new LikeRepository(likes);
+    
 
     getAllLikedPosts = async ( userId ) => {
-        const data = await this.#likeRepository.getAllLikedPosts( userId  );
+        const data = await this.likeRepository.getAllLikedPosts( userId );
 
         if (!data)
             throw new InvalidParamsError(
@@ -31,15 +30,12 @@ class LikeService {
     };
 
     createPostLike = async ( postId, userId ) => {
-        const existLike = await this.#likeRepository.createPostLike(
-            postId,
-            userId,
-        );
+        const existLike = await this.likeRepository.createPostLike( postId, userId );
 
         if(!existLike) {
-            await this.#likeRepository.createLike( postId, userId );
+            await this.likeRepository.createLike( postId, userId );
         } else {
-            await this.#likeRepository.deleteLike( postId, userId );
+            await this.likeRepository.deleteLike( postId, userId );
         }
 
         return existLike;
