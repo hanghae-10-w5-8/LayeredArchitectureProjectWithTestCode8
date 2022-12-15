@@ -1,3 +1,5 @@
+require('dotenv').config();
+const env = process.env;
 const supertest = require('supertest');
 const app = require('../../src/app');
 const { Users } = require('../../src/models');
@@ -48,6 +50,21 @@ describe('users Domain', () => {
         expect(response.status).toEqual(412);
         expect(responseByJson).toMatchObject({
             errorMessage: '중복된 닉네임입니다.',
+        });
+    });
+
+    test('POST localhost:3000/api/users/signup 호출시, cookie에 토큰이 존재하면 AuthenticationError 생성', async () => {
+        const response = await supertest(app)
+            .post('/api/users/signup')
+            .set(
+                'Cookie',
+                `${env.ACCESSTOKEN_NAME}=Bearer TOKEN_VALUE%$;${env.REFRESHTOKEN_NAME}=Bearer TOKEN_VALUE%$`
+            );
+        const responseByJson = JSON.parse(response.text);
+
+        expect(response.status).toEqual(403);
+        expect(responseByJson).toMatchObject({
+            errorMessage: '이미 로그인된 사용자입니다.',
         });
     });
 
@@ -129,6 +146,21 @@ describe('users Domain', () => {
         const accessTokenType = responseByJson.accessToken.split('[')[0];
         expect(response.status).toEqual(200);
         expect(accessTokenType).toEqual('Bearer');
+    });
+
+    test('POST localhost:3000/api/users/login 호출시, cookie에 토큰이 존재하면 AuthenticationError 생성', async () => {
+        const response = await supertest(app)
+            .post('/api/users/login')
+            .set(
+                'Cookie',
+                `${env.ACCESSTOKEN_NAME}=Bearer TOKEN_VALUE%$;${env.REFRESHTOKEN_NAME}=Bearer TOKEN_VALUE%$`
+            );
+        const responseByJson = JSON.parse(response.text);
+
+        expect(response.status).toEqual(403);
+        expect(responseByJson).toMatchObject({
+            errorMessage: '이미 로그인된 사용자입니다.',
+        });
     });
 
     test('POST localhost:3000/api/users/login InvalidParamsError', async () => {

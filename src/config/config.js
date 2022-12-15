@@ -11,7 +11,7 @@ const development = {
 const test = {
     username: env.MYSQL_USERNAME,
     password: env.MYSQL_PASSWORD,
-    database: env.MYSQL_DATABASE, //+ '_testENV',
+    database: env.MYSQL_DATABASE + '_testENV',
     host: env.MYSQL_HOST,
     dialect: 'mysql',
 };

@@ -12,7 +12,7 @@
     "test:integration:users": "cross-env NODE_ENV=test npx jest __test__/integration/users.integration.spec.js --forceExit --passWithNoTests",
     "test:integration:users:silent": "cross-env NODE_ENV=test npx jest __test__/integration/users.integration.spec.js --silent --forceExit --passWithNoTests",
     "lint": "eslint src",
-    "dev": "nodemon src/app.js",
+    "dev": "cross-env NODE_ENV=development nodemon src/app.js",
     "db:create": "npx sequelize db:create --config ./src/config/config.js",
     "db:migrate": "npx sequelize db:migrate --config ./src/config/config.js --migrations-path ./src/migrations --models-path ./src/models",
     "db:drop": "npx sequelize db:drop --config ./src/config/config.js",
