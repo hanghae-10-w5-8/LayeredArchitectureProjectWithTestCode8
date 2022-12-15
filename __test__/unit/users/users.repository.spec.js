@@ -1,4 +1,4 @@
-const UsersRepository = require('../../../repositories/users.repository.js');
+const UsersRepository = require('../../../src/repositories/users.repository.js');
 const { Op } = require('sequelize');
 
 const mockUsersModel = () => ({
@@ -6,8 +6,8 @@ const mockUsersModel = () => ({
     create: jest.fn(),
 });
 
-describe('Users Repository Layer Test', () => {
-    let usersRepository = new UsersRepository(mockUsersModel);
+describe('Users Repository Layer Unit Test', () => {
+    const usersRepository = new UsersRepository(mockUsersModel);
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -42,10 +42,9 @@ describe('Users Repository Layer Test', () => {
     });
 
     test('Users Repository findUser Method by No Such User', async () => {
-        const findUserBodyParams = 'noname';
-        const findUserReturnValue = null;
+        const findUserBodyParams = 'NoSuchUser';
         mockUsersModel.findOne = jest.fn(() => {
-            return findUserReturnValue;
+            return 'No Such User Exists';
         });
 
         const findUserByNickname = await usersRepository.findUser(
@@ -62,7 +61,7 @@ describe('Users Repository Layer Test', () => {
         });
 
         // 3. findUserByNickname이 findUserReturnValue 형태로 정상 반환?
-        expect(findUserByNickname).toEqual(findUserReturnValue);
+        expect(findUserByNickname).toEqual('No Such User Exists');
     });
 
     test('Users Repository authUser Method by Success', async () => {
@@ -144,15 +143,10 @@ describe('Users Repository Layer Test', () => {
             createUserBodyParams.password
         );
 
-        // 1. create method가 1번 호출
         expect(mockUsersModel.create).toHaveBeenCalledTimes(1);
-
-        // 2. mockUsersModel.create이 호출 될 때, parameter로 createUserBodyParams를 받아 호출 됐는지?
         expect(mockUsersModel.create).toHaveBeenCalledWith(
             createUserBodyParams
         );
-
-        // 3. createNewUser가 findUserReturnValue 형태로 정상 반환?
         expect(createNewUser).toEqual('create user success');
     });
 
