@@ -40,12 +40,6 @@ describe('users Domain', () => {
     });
 
     test('POST localhost:3000/api/users/signup db에 존재하는 nickname으로 호출 시 ValidationError 생성', async () => {
-        const requestBody = {
-            nickname: 'testuser1',
-            password: 'testPassowrd1',
-            confirm: 'testPassowrd1',
-        };
-
         const response = await supertest(app)
             .post('/api/users/signup')
             .send(requestBody);
@@ -58,7 +52,7 @@ describe('users Domain', () => {
     });
 
     test('POST localhost:3000/api/users/signup password !== confirm ValidationError 생성', async () => {
-        const requestBody = {
+        const requestBodyWithError = {
             nickname: 'testuser2',
             password: 'testPassowrd',
             confirm: 'testPassowrd1',
@@ -66,7 +60,7 @@ describe('users Domain', () => {
 
         const response = await supertest(app)
             .post('/api/users/signup')
-            .send(requestBody);
+            .send(requestBodyWithError);
         const responseByJson = JSON.parse(response.text);
 
         expect(response.status).toEqual(412);
@@ -76,7 +70,7 @@ describe('users Domain', () => {
     });
 
     test('POST localhost:3000/api/users/signup ID형식 ValidationError 생성', async () => {
-        const requestBody = {
+        const requestBodyWithError = {
             nickname: 'testuser1!!!',
             password: 'testPassowrd1',
             confirm: 'testPassowrd1',
@@ -84,7 +78,7 @@ describe('users Domain', () => {
 
         const response = await supertest(app)
             .post('/api/users/signup')
-            .send(requestBody);
+            .send(requestBodyWithError);
         const responseByJson = JSON.parse(response.text);
 
         expect(response.status).toEqual(412);
@@ -94,7 +88,7 @@ describe('users Domain', () => {
     });
 
     test('POST localhost:3000/api/users/signup pw형식 ValidationError 생성', async () => {
-        const requestBody = {
+        const requestBodyWithError = {
             nickname: 'testuser2',
             password: '@!!!testPassowrd1',
             confirm: '@!!!testPassowrd1',
@@ -102,7 +96,7 @@ describe('users Domain', () => {
 
         const response = await supertest(app)
             .post('/api/users/signup')
-            .send(requestBody);
+            .send(requestBodyWithError);
         const responseByJson = JSON.parse(response.text);
 
         expect(response.status).toEqual(412);
@@ -112,14 +106,14 @@ describe('users Domain', () => {
     });
 
     test('POST localhost:3000/api/users/signup pw에 nickname 포함 ValidationError 생성', async () => {
-        const requestBody = {
+        const requestBodyWithError = {
             nickname: 'testuser2',
             password: '1123testuser2123',
             confirm: '1123testuser2123',
         };
         const response = await supertest(app)
             .post('/api/users/signup')
-            .send(requestBody);
+            .send(requestBodyWithError);
         const responseByJson = JSON.parse(response.text);
         expect(response.status).toEqual(412);
         expect(responseByJson).toMatchObject({
