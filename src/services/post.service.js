@@ -3,18 +3,13 @@ const { ValidationError } = require('../exceptions/index.exception.js');
 const { Users, Posts, Comments, likes } = require('../models');
 
 class PostService {
-    #postRepository;
-    constructor() {
-        this.#postRepository = new PostRepository(
-            Posts,
-            Users,
-            Comments,
-            likes
-        );
+    postRepository;
+    constructor(posts) {
+        this.postRepository = new PostRepository(posts);
     }
 
     createPost = async ({ userId, title, content }) => {
-        const data = await this.#postRepository.createPost(
+        const data = await this.postRepository.createPost(
             userId,
             title,
             content
@@ -24,7 +19,7 @@ class PostService {
     };
 
     findAllPost = async () => {
-        const allPost = await this.#postRepository.findAllPost();
+        const allPost = await this.postRepository.findAllPost();
         if (!allPost)
             throw ValidationError('게시글 조회에 실패하였습니다.', 400);
 
@@ -42,7 +37,7 @@ class PostService {
     };
 
     findPostById = async (postId) => {
-        const findPost = await this.#postRepository.findPostById(postId);
+        const findPost = await this.postRepository.findPostById(postId);
 
         if (!findPost)
             throw new ValidationError('게시글 조회에 실패하였습니다.', 400);
@@ -75,10 +70,10 @@ class PostService {
     };
 
     updatePost = async (postId, title, content) => {
-        const result = await this.#postRepository.findPostById(postId);
+        const result = await this.postRepository.findPostById(postId);
         if (!result) throw new ValidationError('존재하지 않는 게시글입니다.');
 
-        const updatePost = await this.#postRepository.updatePost(
+        const updatePost = await this.postRepository.updatePost(
             postId,
             title,
             content
@@ -86,6 +81,24 @@ class PostService {
         if (!updatePost)
             throw new ValidationError('게시글 수정에 실패하였습니다.');
     };
+
+    deletePost = async (userId, postId) => {
+        const deletedPost = await this.postRepository.deletePost(userId, postId);
+
+        if(deletedPost === 0)
+            throw new ValidationError('게시글이 정상적으로 삭제되지 않았습니다.');
+
+        return deletedPost;    
+    }
+
+    findPost = async (postId) => {
+        const existPost = await this.postRepository.findPost(postId);
+
+        if(!existPost)
+            throw new ValidationError('존재하지 않는 게시물 입니다.');
+        
+        return existPost;
+    }
 }
 
 module.exports = PostService;
