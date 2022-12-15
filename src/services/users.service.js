@@ -11,10 +11,10 @@ const {
 const env = process.env;
 
 class UsersService {
-    #usersRepository = new UsersRepository(Users);
+    usersRepository = new UsersRepository(Users);
 
     findUser = async (nickname) => {
-        const user = await this.#usersRepository.findUser(nickname);
+        const user = await this.usersRepository.findUser(nickname);
 
         return user;
     };
@@ -25,11 +25,10 @@ class UsersService {
         function isRegexValidation(target, regex) {
             return target.search(regex) !== -1;
         }
-        console.log('service:', nickname);
 
         const isExistUser = await this.findUser(nickname);
 
-        if (isExistUser !== null && isExistUser.nickname === nickname) {
+        if (isExistUser) {
             throw new ValidationError('중복된 닉네임입니다.', 412);
         } else if (password !== confirm) {
             throw new ValidationError('패스워드가 일치하지 않습니다.', 412);
@@ -50,19 +49,16 @@ class UsersService {
         const hashValue = hash(password);
         console.log(hashValue);
 
-        const user = await this.#usersRepository.createUser(
-            nickname,
-            hashValue
-        );
+        const user = await this.usersRepository.createUser(nickname, hashValue);
 
         return user;
     };
 
     logInUser = async (nickname, password) => {
         const hashValue = hash(password);
-        const user = await this.#usersRepository.authUser(nickname, hashValue);
+        const user = await this.usersRepository.authUser(nickname, hashValue);
 
-        if (user === null || !user) {
+        if (!user) {
             throw new ValidationError(
                 '닉네임 또는 패스워드를 확인해주세요',
                 412

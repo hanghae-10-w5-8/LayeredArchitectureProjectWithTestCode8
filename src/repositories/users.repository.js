@@ -1,19 +1,20 @@
 const { Op } = require('sequelize');
 
 class UsersRepository {
+    #usersModel;
     constructor(UsersModel) {
-        this.usersModel = UsersModel;
+        this.#usersModel = UsersModel;
     }
 
     findUser = async (nickname) => {
-        return await this.usersModel.findOne({
+        return await this.#usersModel.findOne({
             where: { nickname },
             attributes: { exclude: ['password'] },
         });
     };
 
     authUser = async (nickname, password) => {
-        return await this.usersModel.findOne({
+        return await this.#usersModel.findOne({
             where: {
                 [Op.and]: [{ nickname }, { password }],
             },
@@ -22,7 +23,7 @@ class UsersRepository {
     };
 
     createUser = async (nickname, password) => {
-        return await this.usersModel.create({
+        return await this.#usersModel.create({
             nickname,
             password,
         });

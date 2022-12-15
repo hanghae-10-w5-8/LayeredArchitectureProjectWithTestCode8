@@ -24,3 +24,5 @@ app.use(errorHandler); // Error Handler
 app.listen(PORT, () => {
     console.log(PORT, '서버를 실행 중 입니다.');
 });
+
+module.exports = app;
