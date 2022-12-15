@@ -1,16 +1,13 @@
 const LikeService = require('../services/like.service.js');
-const PostService = require('../services/post.service.js');
 const { InvalidParamsError } = require('../exceptions/index.exception');
 class LikeController {
     likeService = new LikeService();
-    postService = new PostService();
-      
 
     getAllLikedPosts = async (req, res, next) => {
         try {
-            const { userId } = req.body;
+            const userId  = res.locals.user;
 
-            if(!userId) throw new InvalidParamsError();
+            // if(!userId) throw new InvalidParamsError();
 
             const postLike = await this.likeService.getAllLikedPosts( userId );
 
@@ -22,15 +19,12 @@ class LikeController {
 
     createPostLike = async (req, res, next) => {
         try {
-            const { userId } = req.body;
+            const userId = res.locals.user;
             const { postId } = req.params;
 
-            if(!userId) throw new InvalidParamsError();
+            console.log(userId);
 
-            // PostService 확인하고 게시물 없을시 return문 추가
-            // const existPost = this.postService.findPostById( postId );
-            
-            // if(!existPost) throw new InvalidParamsError('존재하지 않는 게시물입니다.', 404);
+            if(!userId) throw new InvalidParamsError();
 
             const isLike = await this.likeService.createPostLike(
                 postId,

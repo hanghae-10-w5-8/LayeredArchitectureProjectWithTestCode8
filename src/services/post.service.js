@@ -6,7 +6,6 @@ class PostService {
     postRepository = new PostRepository(Posts, Users, Comments, likes);
 
     createPost = async (userId, title, content) => {
-        console.log(`service : ${userId}`);
         const data = await this.postRepository.createPost(
             userId,
             title,
@@ -82,6 +81,24 @@ class PostService {
         if (!updatePost)
             throw new ValidationError('게시글 수정에 실패하였습니다.');
     };
+
+    deletePost = async (userId, postId) => {
+        const deletedPost = await this.postRepository.deletePost(userId, postId);
+
+        if(deletedPost === 0)
+            throw new ValidationError('게시글이 정상적으로 삭제되지 않았습니다.');
+
+        return deletedPost;    
+    }
+
+    findPost = async (postId) => {
+        const existPost = await this.postRepository.findPost(postId);
+
+        if(!existPost)
+            throw new ValidationError('존재하지 않는 게시물 입니다.');
+        
+        return existPost;
+    }
 }
 
 module.exports = PostService;

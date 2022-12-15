@@ -1,5 +1,6 @@
 const PostService = require('../services/post.service.js');
 const { InvalidParamsError } = require('../exceptions/index.exception.js');
+const { Posts } = require('../models');
 
 class PostController {
     postService = new PostService();
@@ -56,12 +57,30 @@ class PostController {
                 throw new InvalidParamsError();
             }
 
+
             await this.postService.updatePost(userId, postId, title, content);
+
             res.status(200).json({ result: '게시글을 수정 하였습니다.' });
         } catch (error) {
             next(error);
         }
     };
+
+    deletePost = async (req, res, next) => {
+        try {
+            const { userId } = req.body;
+            const { postId } = req.params;
+
+            await this.postService.findPost(postId);
+
+            await this.postService.deletePost(userId, postId);
+
+            res.status(200).json({ result: '게시글을 삭제 하였습니다.'});
+
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = PostController;
