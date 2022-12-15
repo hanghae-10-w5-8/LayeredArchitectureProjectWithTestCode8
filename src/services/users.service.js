@@ -68,6 +68,7 @@ class UsersService {
         const accessToken = createToken(user.userId, '3h');
         const refreshToken = createToken('refreshToken', '1d');
         tokenObject[refreshToken] = user.userId;
+        console.log(tokenObject[refreshToken]);
 
         const tokens = {
             accessToken,

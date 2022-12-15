@@ -3,14 +3,12 @@ const { InvalidParamsError } = require('../exceptions/index.exception.js');
 const { Posts } = require('../models');
 
 class PostController {
-    #postService;
-    constructor() {
-        this.postService = new PostService();
-    }
+    postService = new PostService();
     createPost = async (req, res, next) => {
         try {
-            const { userId, title, content } = req.body;
-            console.log(title, content);
+            const { title, content } = req.body;
+            const userId = res.locals.user;
+
             if (!title || !content) {
                 throw new InvalidParamsError(
                     '요청한 데이터 형식이 올바르지 않습니다.'
@@ -22,6 +20,7 @@ class PostController {
                 title,
                 content
             );
+            console.log(posts);
             res.status(201).json({ result: posts });
         } catch (error) {
             next(error);
@@ -53,11 +52,14 @@ class PostController {
         try {
             const { postId } = req.params;
             const { title, content } = req.body;
+            const userId = res.locals.user;
             if (!title || !content) {
                 throw new InvalidParamsError();
             }
 
-            await this.postService.updatePost(postId, title, content);
+
+            await this.postService.updatePost(userId, postId, title, content);
+
             res.status(200).json({ result: '게시글을 수정 하였습니다.' });
         } catch (error) {
             next(error);

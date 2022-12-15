@@ -70,9 +70,9 @@ module.exports = async (req, res, next) => {
             res.locals.user = accessTokenId;
             next();
         }
+        console.log(accessTokenValue);
 
         const { userId } = getAccessTokenPayload(accessTokenValue);
-
         // !!! controller에서 값을 받을 때, 기존과 같이 user객체가 아닌 accessTokenId(숫자)가 반환됩니다. -> "userId = res.locals.user"로 받으세요 !!!
         res.locals.user = userId;
         next();

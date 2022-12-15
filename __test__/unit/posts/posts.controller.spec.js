@@ -1,46 +1,71 @@
-// const PostController = require('../../../src/controllers/post.controller');
+const PostController = require('../../../src/controllers/post.controller.js');
 
-// const mockPostService = {
-//     deletePost: jest.fn(),
-// };
+const mockPostsService = {
+    findAllPost: jest.fn(),
+    createPost: jest.fn(),
+    findPostById: jest.fn(),
+    updatePost: jest.fn(),
+};
 
-// const mockRequest = {
-//     body: jest.fn(),
-// };
+let mockRequest = {
+    body: jest.fn(),
+};
 
-// const mockResponse = {
-//     status: jest.fn(),
-// };
+let mockResponse = {
+    status: jest.fn(),
+    json: jest.fn(),
+    locals: { user: jest.fn() },
+};
 
-// const mockNext = jest.fn();
+let mockNext = jest.fn();
 
-// const postController = new PostController();
-// postController.mockPostService = mockPostService;
+let postsController = new PostController();
+postsController.postService = mockPostsService;
 
-// describe('post Controller Layer Test', () => {
-//     beforeEach(() => {
-//         jest.resetAllMocks();
+describe('posts Controller Layer Test', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
 
-//         mockResponse.status = jest.fn(() => {
-//             return mockResponse;
-//         });
-//     });
+    //////테스트 시작
+    test('createPost Method Success Case', async () => {
+        const requestBodyParams = {
+            title: 'title',
+            content: 'content',
+        };
+        mockResponse.status = jest.fn(() => {
+            return mockResponse;
+        });
 
-//     test('postController deletePost Failed Case', async () => {
-//         mockRequest.body = {
-//             userId: '1'
-//         };
+        mockRequest.body = requestBodyParams;
+        mockResponse.locals.user = 1;
+        const createPostReturnValue = {
+            postId: 1,
+            userId: 1,
+            title: 'title',
+            content: 'content',
+            createdAt: 'aa',
+            updatedAt: 'aa',
+        };
 
-//         mockRequest.params = {
-//             postId: '1'
-//         };
+        postsController.postService.createPost = jest.fn(
+            () => createPostReturnValue
+        );
 
-//         mockPostService.findPost = jest.fn(() => {
-//             throw new err('에러발생');
-//         });
+        await postsController.createPost(mockRequest, mockResponse, mockNext);
 
-//         await postController.deletePost(mockRequest, mockResponse, mockNext);
-
-//         expect(mockNext).toHaveBeenCalledWith(Error('요청한 데이터 형식이 올바르지 않습니다.'));
-//     })
-// })
+        expect(postsController.postService.createPost).toHaveBeenCalledTimes(1);
+        expect(postsController.postService.createPost).toHaveBeenCalledWith(
+            mockResponse.locals.user,
+            requestBodyParams.title,
+            requestBodyParams.content
+        );
+        // 2. res.status는 1번 호출되고, 201의 값으로 호출됩니다.
+        expect(mockResponse.status).toHaveBeenCalledTimes(1);
+        expect(mockResponse.status).toHaveBeenCalledWith(201);
+        // 3. PostService.cretePost에서 반환된 createPostData 변수를 이용해 res.json Method가 호출됩니다.
+        expect(mockResponse.json).toHaveBeenCalledWith({
+            result: createPostReturnValue,
+        });
+    });
+});

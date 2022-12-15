@@ -1,24 +1,35 @@
-const { Users, Posts, Comments, likes } = require('../models');
 const InternalServerError = require('../exceptions/index.exception.js');
 
 class PostRepository {
-    constructor(Posts, Users, Comments, likes) {
-        this.Posts = Posts;
-        this.Users = Users;
-        this.Comments = Comments;
-        this.likes = likes;
+    #PostsModel;
+    #UsersModel;
+    #CommentsModel;
+    #likesModel;
+    constructor(PostsModel, UsersModel, CommentsModel, likesModel) {
+        this.#PostsModel = PostsModel;
+        this.#UsersModel = UsersModel;
+        this.#CommentsModel = CommentsModel;
+        this.#likesModel = likesModel;
     }
 
-    createPost = async ({ userId, title, content }) => {
-        const createPostData = await Posts.create(userId, title, content);
+    createPost = async (userId, title, content) => {
+        const createPostData = await this.#PostsModel.create({
+            userId,
+            title,
+            content,
+        });
         return createPostData;
     };
 
     findAllPost = async () => {
-        const data = await Posts.findAll({
+        const data = await this.#PostsModel.findAll({
             include: [
-                { model: Users, attributes: ['nickname'] },
-                { model: likes, as: 'likes', attributes: ['likeId'] },
+                { model: this.#UsersModel, attributes: ['nickname'] },
+                {
+                    model: this.#likesModel,
+                    as: 'likes',
+                    attributes: ['likeId'],
+                },
             ],
             // 내림차순 정렬
             order: [['createdAt', 'DESC']],
@@ -27,13 +38,17 @@ class PostRepository {
     };
 
     findPostById = async (postId) => {
-        const post = await Posts.findOne({
+        const post = await this.#PostsModel.findOne({
             where: { postId },
             include: [
-                { model: Users, attributes: ['nickname'] },
-                { model: likes, as: 'likes', attributes: ['likeId'] },
+                { model: this.#UsersModel, attributes: ['nickname'] },
                 {
-                    model: Comments,
+                    model: this.#likesModel,
+                    as: 'likes',
+                    attributes: ['likeId'],
+                },
+                {
+                    model: this.#CommentsModel,
                     as: 'Comments',
                     order: [['createdAt', 'DESC']],
                     attributes: [
@@ -42,17 +57,19 @@ class PostRepository {
                         'createdAt',
                         'updatedAt',
                     ],
-                    include: [{ model: Users, attributes: ['nickname'] }],
+                    include: [
+                        { model: this.#UsersModel, attributes: ['nickname'] },
+                    ],
                 },
             ],
         });
         return post;
     };
 
-    updatePost = async ({ postId, title, content }) => {
-        const result = await Posts.update(
+    updatePost = async (userId, postId, title, content) => {
+        const result = await this.#PostsModel.update(
             { title, content },
-            { where: { postId: postId } }
+            { where: { postId: postId, userId: userId } }
         );
         return result;
     };
