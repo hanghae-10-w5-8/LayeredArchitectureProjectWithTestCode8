@@ -75,8 +75,7 @@ web_modules/
 *.tgz
 
 # Yarn Integrity file
-.yarn-integrity
-yarn.lock
+.yarn-Integrity
 
 # dotenv environment variable files
 .env
@@ -144,5 +143,3 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node
-
-package-lock.json
