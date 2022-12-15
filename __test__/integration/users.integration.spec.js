@@ -4,9 +4,6 @@ const supertest = require('supertest');
 const app = require('../../src/app');
 const { Users } = require('../../src/models');
 
-// npm run test:integration -> test 환경에서 실행되는지 꼭 확인
-console.log(process.env.NODE_ENV);
-
 beforeAll(async () => {
     if (process.env.NODE_ENV === 'test') await Users.destroy({ where: {} });
     else throw new Error('NODE_ENV가 설정되어 있지 않습니다.');
@@ -16,12 +13,6 @@ const requestBody = {
     nickname: 'testuser1',
     password: 'testPassowrd1',
     confirm: 'testPassowrd1',
-};
-const createUserReturnValueByController = {
-    userId: 1,
-    nickname: 'testuser1',
-    createdAt: new Date().toString(),
-    updatedAt: new Date().toString(),
 };
 
 describe('users Domain', () => {
