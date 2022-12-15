@@ -13,11 +13,12 @@ class PostRepository {
     }
 
     createPost = async ({ userId, title, content }) => {
-        const createPostData = await this.#PostsModel.create(
+        console.log(`repository : ${userId}`);
+        const createPostData = await this.#PostsModel.create({
             userId,
             title,
-            content
-        );
+            content,
+        });
         return createPostData;
     };
 
@@ -37,7 +38,7 @@ class PostRepository {
         return data;
     };
 
-    findPostById = async (postId) => {
+    findPostById = async ({ postId }) => {
         const post = await this.#PostsModel.findOne({
             where: { postId },
             include: [
@@ -66,10 +67,10 @@ class PostRepository {
         return post;
     };
 
-    updatePost = async ({ postId, title, content }) => {
+    updatePost = async ({ userId, postId, title, content }) => {
         const result = await this.#PostsModel.update(
             { title, content },
-            { where: { postId: postId } }
+            { where: { postId: postId, userId: userId } }
         );
         return result;
     };

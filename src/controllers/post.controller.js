@@ -2,13 +2,12 @@ const PostService = require('../services/post.service.js');
 const { InvalidParamsError } = require('../exceptions/index.exception.js');
 
 class PostController {
-    #postService;
-    constructor() {
-        this.#postService = new PostService();
-    }
+    postService = new PostService();
     createPost = async (req, res, next) => {
         try {
-            const { userId, title, content } = req.body;
+            const { title, content } = req.body;
+            const userId = res.locals.user;
+            console.log(`postController: ${userId}`);
 
             if (!title || !content) {
                 throw new InvalidParamsError(
@@ -16,11 +15,11 @@ class PostController {
                 );
             }
 
-            const posts = await this.#postService.createPost(
+            const posts = await this.postService.createPost({
                 userId,
                 title,
-                content
-            );
+                content,
+            });
             res.status(201).json({ result: posts });
         } catch (error) {
             next(error);
@@ -29,7 +28,7 @@ class PostController {
 
     getPosts = async (req, res, next) => {
         try {
-            const post = await this.#postService.findAllPost();
+            const post = await this.postService.findAllPost();
             res.status(200).json({ result: post });
         } catch (error) {
             next(error);
@@ -40,7 +39,7 @@ class PostController {
             const { postId } = req.params;
             if (postId === 'like') return next();
             if (!postId) throw new InvalidParamsError();
-            const post = await this.#postService.findPostById(postId);
+            const post = await this.postService.findPostById({ postId });
 
             res.status(200).json({ data: post });
         } catch (error) {
@@ -52,11 +51,17 @@ class PostController {
         try {
             const { postId } = req.params;
             const { title, content } = req.body;
+            const userId = res.locals.user;
             if (!title || !content) {
                 throw new InvalidParamsError();
             }
 
-            await this.#postService.updatePost(postId, title, content);
+            await this.postService.updatePost({
+                userId,
+                postId,
+                title,
+                content,
+            });
             res.status(200).json({ result: '게시글을 수정 하였습니다.' });
         } catch (error) {
             next(error);
