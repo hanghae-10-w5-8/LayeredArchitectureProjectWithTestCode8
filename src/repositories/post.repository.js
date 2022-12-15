@@ -75,7 +75,7 @@ class PostRepository {
     };
 
     deletePost = async (userId, postId) => {
-        const deletedPost = await this.Posts.destroy({
+        const deletedPost = await this.#PostsModel.destroy({
             where: { userId, postId }
         });
 
@@ -83,7 +83,7 @@ class PostRepository {
     }
 
     findPost = async (postId) => {
-        const existPost = await this.Posts.findOne({
+        const existPost = await this.#PostsModel.findOne({
             where: { postId }
         });
 

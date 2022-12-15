@@ -68,7 +68,7 @@ class PostController {
 
     deletePost = async (req, res, next) => {
         try {
-            const { userId } = req.body;
+            const userId = res.locals.user;
             const { postId } = req.params;
 
             await this.postService.findPost(postId);
