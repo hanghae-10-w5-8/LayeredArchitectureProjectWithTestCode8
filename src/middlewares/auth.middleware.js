@@ -55,6 +55,7 @@ module.exports = async (req, res, next) => {
                 );
 
             const accessTokenId = tokenObject[refreshTokenValue];
+
             if (!accessTokenId)
                 throw new AuthenticationError(
                     'Refresh Token의 정보가 서버에 존재하지 않습니다.',
