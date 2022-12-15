@@ -48,6 +48,7 @@ class UsersService {
         }
 
         const hashValue = hash(password);
+        console.log(hashValue);
 
         const user = await this.#usersRepository.createUser(
             nickname,

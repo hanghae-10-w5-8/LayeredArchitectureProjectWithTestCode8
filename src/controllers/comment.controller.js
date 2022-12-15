@@ -2,11 +2,10 @@ const CommentService = require('../services/comment.service.js');
 const { ValidationError } = require('../exceptions/index.exception');
 
 class CommentController {
-    #commentService;
     constructor() {
-        this.#commentService = new CommentService();
+        this.commentService = new CommentService();
     }
-    createComment = async (req, res, next) => {
+    createdComment = async (req, res, next) => {
         try {
             const { postId } = req.params;
             const { userId, comment } = req.body;
@@ -15,7 +14,7 @@ class CommentController {
                 throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
             }
 
-            const dbData = await this.#commentService.createdComment({
+            const dbData = await this.commentService.createdComment({
                 postId,
                 userId,
                 comment,
@@ -36,7 +35,7 @@ class CommentController {
                 throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
             }
 
-            await this.#commentService.editComment({
+            await this.commentService.editComment({
                 commentId,
                 userId,
                 comment,
@@ -54,7 +53,7 @@ class CommentController {
             const { userId } = req.body;
             if (!userId) throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
 
-            await this.#commentService.deleteComment({
+            await this.commentService.deleteComment({
                 commentId,
                 userId,
             });
@@ -65,17 +64,18 @@ class CommentController {
         }
     };
 
-    getComments = async (req, res, next) => {
+    getComment = async (req, res, next) => {
         try {
             const { postId } = req.params;
+            console.log(postId)
 
             if (!postId) throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
 
-            const result = await this.#commentService.getComments({
+            const result = await this.commentService.getComment({
                 postId,
             });
 
-            res.json({ result: result });
+            res.status(200).json({ result: result });
         } catch (error) {
             next(error);
         }
