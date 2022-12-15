@@ -1,22 +1,23 @@
 const PostService = require('../services/post.service.js');
 const { InvalidParamsError } = require('../exceptions/index.exception.js');
+const { Posts } = require('../models');
 
 class PostController {
     #postService;
     constructor() {
-        this.#postService = new PostService();
+        this.postService = new PostService();
     }
     createPost = async (req, res, next) => {
         try {
             const { userId, title, content } = req.body;
-
+            console.log(title, content);
             if (!title || !content) {
                 throw new InvalidParamsError(
                     '요청한 데이터 형식이 올바르지 않습니다.'
                 );
             }
 
-            const posts = await this.#postService.createPost(
+            const posts = await this.postService.createPost(
                 userId,
                 title,
                 content
@@ -29,7 +30,7 @@ class PostController {
 
     getPosts = async (req, res, next) => {
         try {
-            const post = await this.#postService.findAllPost();
+            const post = await this.postService.findAllPost();
             res.status(200).json({ result: post });
         } catch (error) {
             next(error);
@@ -40,7 +41,7 @@ class PostController {
             const { postId } = req.params;
             if (postId === 'like') return next();
             if (!postId) throw new InvalidParamsError();
-            const post = await this.#postService.findPostById(postId);
+            const post = await this.postService.findPostById(postId);
 
             res.status(200).json({ data: post });
         } catch (error) {
@@ -56,12 +57,28 @@ class PostController {
                 throw new InvalidParamsError();
             }
 
-            await this.#postService.updatePost(postId, title, content);
+            await this.postService.updatePost(postId, title, content);
             res.status(200).json({ result: '게시글을 수정 하였습니다.' });
         } catch (error) {
             next(error);
         }
     };
+
+    deletePost = async (req, res, next) => {
+        try {
+            const { userId } = req.body;
+            const { postId } = req.params;
+
+            await this.postService.findPost(postId);
+
+            await this.postService.deletePost(userId, postId);
+
+            res.status(200).json({ result: '게시글을 삭제 하였습니다.'});
+
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = PostController;
