@@ -5,13 +5,13 @@ const { Users, Posts, Comments, likes } = require('../models');
 class PostService {
     postRepository = new PostRepository(Posts, Users, Comments, likes);
 
-    createPost = async ({ userId, title, content }) => {
+    createPost = async (userId, title, content) => {
         console.log(`service : ${userId}`);
-        const data = await this.postRepository.createPost({
+        const data = await this.postRepository.createPost(
             userId,
             title,
-            content,
-        });
+            content
+        );
         if (!data) throw ValidationError('게시글 작성에 실패하였습니다.', 400);
         return data;
     };
@@ -35,8 +35,8 @@ class PostService {
         });
     };
 
-    findPostById = async ({ postId }) => {
-        const findPost = await this.postRepository.findPostById({ postId });
+    findPostById = async (postId) => {
+        const findPost = await this.postRepository.findPostById(postId);
 
         if (!findPost)
             throw new ValidationError('게시글 조회에 실패하였습니다.', 400);
@@ -69,16 +69,16 @@ class PostService {
         };
     };
 
-    updatePost = async ({ userId, postId, title, content }) => {
-        const result = await this.postRepository.findPostById({ postId });
+    updatePost = async (userId, postId, title, content) => {
+        const result = await this.postRepository.findPostById(postId);
         if (!result) throw new ValidationError('존재하지 않는 게시글입니다.');
 
-        const updatePost = await this.postRepository.updatePost({
+        const updatePost = await this.postRepository.updatePost(
             userId,
             postId,
             title,
-            content,
-        });
+            content
+        );
         if (!updatePost)
             throw new ValidationError('게시글 수정에 실패하였습니다.');
     };

@@ -4,16 +4,16 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "npx jest --forceExit",
-        "test:silent": "npx jest --silent --forceExit",
-        "test:coverage": "npx jest --coverage --forceExit",
-        "test:unit": "npx jest src/__test__/unit --forceExit --passWithNoTests",
-        "test:integration": "npx jest src/__test__/integration --forceExit --passWithNoTests",
+        "test": "cross-env NODE_ENV=test npx jest --forceExit",
+        "test:silent": "cross-env NODE_ENV=test npx jest --silent --forceExit",
+        "test:coverage": "cross-env NODE_ENV=test npx jest --coverage --forceExit",
+        "test:unit": "cross-env NODE_ENV=test npx jest ./__test__/unit/posts --forceExit --passWithNoTests",
+        "test:integration": "cross-env NODE_ENV=test npx jest src/__test__/integration --forceExit --passWithNoTests",
         "lint": "eslint src",
         "dev": "nodemon src/app.js",
-        "db:create": "npx sequelize db:create --config ./src/config/config.js",
-        "db:migrate": "npx sequelize db:migrate --config ./src/config/config.js --migrations-path ./src/migrations --models-path ./src/models",
-        "db:drop": "npx sequelize db:drop --config ./src/config/config.js"
+        "db:create": "cross-env NODE_ENV=test npx sequelize db:create --config ./src/config/config.js",
+        "db:migrate": "cross-env NODE_ENV=test npx sequelize db:migrate --config ./src/config/config.js --migrations-path ./src/migrations --models-path ./src/models",
+        "db:drop": "cross-env NODE_ENV=test npx sequelize db:drop --config ./src/config/config.js"
     },
     "author": "",
     "license": "ISC",
@@ -29,6 +29,7 @@
         "sequelize": "^6.27.0"
     },
     "devDependencies": {
+        "cross-env": "^7.0.3",
         "eslint": "^8.29.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-node": "^11.1.0",

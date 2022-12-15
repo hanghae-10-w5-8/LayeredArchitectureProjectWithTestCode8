@@ -12,8 +12,7 @@ class PostRepository {
         this.#likesModel = likesModel;
     }
 
-    createPost = async ({ userId, title, content }) => {
-        console.log(`repository : ${userId}`);
+    createPost = async (userId, title, content) => {
         const createPostData = await this.#PostsModel.create({
             userId,
             title,
@@ -38,7 +37,7 @@ class PostRepository {
         return data;
     };
 
-    findPostById = async ({ postId }) => {
+    findPostById = async (postId) => {
         const post = await this.#PostsModel.findOne({
             where: { postId },
             include: [
@@ -67,7 +66,7 @@ class PostRepository {
         return post;
     };
 
-    updatePost = async ({ userId, postId, title, content }) => {
+    updatePost = async (userId, postId, title, content) => {
         const result = await this.#PostsModel.update(
             { title, content },
             { where: { postId: postId, userId: userId } }

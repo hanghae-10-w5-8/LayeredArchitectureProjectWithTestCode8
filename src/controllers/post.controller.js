@@ -7,7 +7,6 @@ class PostController {
         try {
             const { title, content } = req.body;
             const userId = res.locals.user;
-            console.log(`postController: ${userId}`);
 
             if (!title || !content) {
                 throw new InvalidParamsError(
@@ -15,11 +14,12 @@ class PostController {
                 );
             }
 
-            const posts = await this.postService.createPost({
+            const posts = await this.postService.createPost(
                 userId,
                 title,
-                content,
-            });
+                content
+            );
+            console.log(posts);
             res.status(201).json({ result: posts });
         } catch (error) {
             next(error);
@@ -39,7 +39,7 @@ class PostController {
             const { postId } = req.params;
             if (postId === 'like') return next();
             if (!postId) throw new InvalidParamsError();
-            const post = await this.postService.findPostById({ postId });
+            const post = await this.postService.findPostById(postId);
 
             res.status(200).json({ data: post });
         } catch (error) {
@@ -56,12 +56,7 @@ class PostController {
                 throw new InvalidParamsError();
             }
 
-            await this.postService.updatePost({
-                userId,
-                postId,
-                title,
-                content,
-            });
+            await this.postService.updatePost(userId, postId, title, content);
             res.status(200).json({ result: '게시글을 수정 하였습니다.' });
         } catch (error) {
             next(error);
