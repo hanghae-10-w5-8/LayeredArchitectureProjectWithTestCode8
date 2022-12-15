@@ -8,7 +8,8 @@ class CommentController {
     createdComment = async (req, res, next) => {
         try {
             const { postId } = req.params;
-            const { userId, comment } = req.body;
+            const { comment } = req.body;
+            const userId = res.locals.user;
 
             if (!postId || !userId || !comment) {
                 throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
@@ -29,7 +30,9 @@ class CommentController {
     editComment = async (req, res, next) => {
         try {
             const { commentId } = req.params;
-            const { comment, userId } = req.body;
+            const { comment } = req.body;
+            const userId = res.locals.user;
+
 
             if (!commentId || !userId || !comment) {
                 throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
@@ -50,7 +53,7 @@ class CommentController {
     deleteComment = async (req, res, next) => {
         try {
             const { commentId } = req.params;
-            const { userId } = req.body;
+            const userId = res.locals.user;
             if (!userId) throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
 
             await this.commentService.deleteComment({
@@ -67,7 +70,6 @@ class CommentController {
     getComment = async (req, res, next) => {
         try {
             const { postId } = req.params;
-            console.log(postId)
 
             if (!postId) throw new ValidationError('요청한 데이터 형식이 올바르지 않습니다.');
 
