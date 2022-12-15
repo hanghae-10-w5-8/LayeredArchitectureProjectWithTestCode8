@@ -1,9 +1,9 @@
 const { Op } = require('sequelize');
+const { Users } = require('../models');
 
 class CommentRepository {
-    constructor(Comments, Users) {
+    constructor(Comments) {
         this.Comments = Comments
-        this.Users = Users
     }
     getComment = async ({ postId }) => {
         const comments = await this.Comments.findAll({
@@ -11,7 +11,7 @@ class CommentRepository {
             where: { postId: postId },
             include: [
                 {
-                    model: this.Users,
+                    model: Users,
                     attributes: ['nickname'],
                 },
             ],
