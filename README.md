@@ -16,3 +16,5 @@
 
 ## Run
 ### npm run dev
+
+## TestCode 폴더는 원래 dev브랜치에만 있는게 맞습니다.
