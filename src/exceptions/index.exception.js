@@ -20,6 +20,7 @@ class AuthenticationError extends Error {
         super(message);
         this.status = status || 400;
         this.name = 'AuthenticationError';
+        if (!message) this.message = '회원 가입에 실패했습니다.';
     }
 }
 
